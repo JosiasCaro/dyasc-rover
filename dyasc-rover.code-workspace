@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "Rover_codigo",
+			"path": "Rover/PlatformIO/Rover_codigo"
+		}
+	],
+	"settings": {}
+}

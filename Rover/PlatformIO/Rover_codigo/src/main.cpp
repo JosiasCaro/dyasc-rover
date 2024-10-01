@@ -1,15 +1,10 @@
 #include <Arduino.h>
 
-int motor1Avanzar = 0;
-int motor1Atras = 1;
-int motor2Avanzar = 2;
-int motor2Atras = 3;
-int espera = 3000;
-
-int ledAdelante = 5;
-int ledAtras = 6;
-int ledDerecha = 7;
-int ledIzquierda = 8;
+int motor1Avanzar = 4;
+int motor1Atras = 16;
+int motor2Avanzar = 17;
+int motor2Atras = 5;
+int espera = 1500;
 
 void InicializarMotores(){
   pinMode(motor1Avanzar, OUTPUT);
@@ -18,80 +13,90 @@ void InicializarMotores(){
   pinMode(motor2Atras, OUTPUT);
 }
 
-void inicializarLeds() {
-  pinMode(ledAdelante, OUTPUT);
-  pinMode(ledAtras, OUTPUT);
-  pinMode(ledDerecha, OUTPUT);
-  pinMode(ledIzquierda, OUTPUT);
+void InicializarSerial(){
+  Serial.begin(9600);
 }
 
-void MotoresAvanzar(int velocidad){
-  // Avanzar (Motor 1 adelante, Motor 2 adelante)
-  digitalWrite(ledAdelante, 1);
-  digitalWrite(ledAtras, 0);
-  digitalWrite(ledDerecha, 0);
-  digitalWrite(ledIzquierda, 0);
-  
-  analogWrite(motor1Avanzar, velocidad);
-  analogWrite(motor1Atras, 0);
-  analogWrite(motor2Avanzar, velocidad);
-  analogWrite(motor2Atras, 0);
-}
-
-void MotoresRetroceder(int velocidad){
+void Reposo(){
   // Retroceder (Motor 1 atrás, Motor 2 atrás)
-  digitalWrite(ledAdelante, 0);
-  digitalWrite(ledAtras, 1);
-  digitalWrite(ledDerecha, 0);
-  digitalWrite(ledIzquierda, 0);
-    
+  analogWrite(motor1Avanzar, 0);
+  analogWrite(motor1Atras, 0);
+  analogWrite(motor2Avanzar, 0);
+  analogWrite(motor2Atras, 0);
+
+  Serial.println("Reposo");
+}
+
+void DesplazarceAdelante(int velocidad, int duracion){
+  // Avanzar (Motor 1 adelante, Motor 2 adelante)
+  analogWrite(motor1Avanzar, velocidad);
+  analogWrite(motor1Atras, 0);
+  analogWrite(motor2Avanzar, velocidad);
+  analogWrite(motor2Atras, 0);
+
+  Serial.println("Motor Adelante");
+
+  delay(duracion);
+
+  Reposo();
+}
+
+void DesplazarceAtras(int velocidad, int duracion){
+  // Retroceder (Motor 1 atrás, Motor 2 atrás)
   analogWrite(motor1Avanzar, 0);
   analogWrite(motor1Atras, velocidad);
   analogWrite(motor2Avanzar, 0);
   analogWrite(motor2Atras, velocidad);
+
+  Serial.println("Motor Atras");
+
+  delay(duracion);
+
+  Reposo();
 }
 
-void MotoresDerecha(int velocidad){
+void GirarDerecha(int velocidad, int duracion){
   // Girar a la Derecha (Motor 1 adelante, Motor 2 atrás)
-  digitalWrite(ledAdelante, 0);
-  digitalWrite(ledAtras, 0);
-  digitalWrite(ledDerecha, 1);
-  digitalWrite(ledIzquierda, 0);
-  
   analogWrite(motor1Avanzar, velocidad);
   analogWrite(motor1Atras, 0);
   analogWrite(motor2Avanzar, 0);
   analogWrite(motor2Atras, velocidad);
+  
+  Serial.println("Motor Derecha");
+
+  delay(duracion);
+
+  Reposo();
 }
 
-void MotoresIzquierda(int velocidad){
+void GirarIzquierda(int velocidad, int duracion){
   // Girar a la izquierda (Motor 1 atrás, Motor 2 adelante)
-  digitalWrite(ledAdelante, 0);
-  digitalWrite(ledAtras, 0);
-  digitalWrite(ledDerecha, 0);
-  digitalWrite(ledIzquierda, 1);
-  
   analogWrite(motor1Avanzar, 0);
   analogWrite(motor1Atras, velocidad);
   analogWrite(motor2Avanzar, velocidad);
   analogWrite(motor2Atras, 0);
+
+  Serial.println("Motor Izquierda");
+
+  delay(duracion);
+
+  Reposo();
 }
 
 void setup() {
   InicializarMotores();
-  inicializarLeds();
-
+  InicializarSerial();
 }
 
 void loop() {
-  int velocidad = 128;  // Velocidad PWM, modularion para futura implementacion de movimiento con velocidad variable.
+  int velocidad = 200;  // Velocidad PWM, modularion para futura implementacion de movimiento con velocidad variable.
 
-  MotoresAvanzar(velocidad);
+  DesplazarceAdelante(velocidad, espera);
   delay(espera);
-  MotoresRetroceder(velocidad);
+  DesplazarceAtras(velocidad, espera);
   delay(espera);
-  MotoresDerecha(velocidad);
+  GirarDerecha(velocidad, espera);
   delay(espera);
-  MotoresIzquierda(velocidad);
+  GirarIzquierda(velocidad, espera);
   delay(espera);
 }
