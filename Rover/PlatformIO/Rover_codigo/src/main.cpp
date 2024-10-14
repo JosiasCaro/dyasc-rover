@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include "Rover/Rover.h"
-#include <Bluepad32.h>
-
 
 int velocidad = 200;
 int espera = 1500;
